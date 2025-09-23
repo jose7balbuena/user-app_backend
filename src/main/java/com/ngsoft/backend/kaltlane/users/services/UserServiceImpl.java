@@ -3,6 +3,8 @@ package com.ngsoft.backend.kaltlane.users.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +33,12 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<User> findAll(Pageable pageable) {
+        return this.userRepository.findAll(pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Optional<User> findById(@NonNull Long id) {
         return this.userRepository.findById(id);
     }
@@ -46,6 +54,8 @@ public class UserServiceImpl implements IUserService {
     public void deleteById(Long id) {
         this.userRepository.deleteById(id);
     }
+
+    
 
    
 

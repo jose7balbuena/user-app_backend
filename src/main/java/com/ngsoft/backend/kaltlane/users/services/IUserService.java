@@ -3,6 +3,8 @@ package com.ngsoft.backend.kaltlane.users.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 
 import com.ngsoft.backend.kaltlane.users.entites.User;
@@ -16,6 +18,12 @@ public interface IUserService {
      * @return a list of all users
      */
     List<User> findAll();
+    /**
+     * Retrieves a paginated list of users.
+     * @param pageable pagination information
+     * @return a paginated list of users
+     */
+    Page<User> findAll(Pageable pageable);
     /**
      * Finds a user by their ID.
      * @param id the ID of the user
@@ -33,4 +41,5 @@ public interface IUserService {
      * @param id the ID of the user to delete
      */
     void deleteById(Long id);
+    
 }
