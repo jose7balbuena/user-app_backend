@@ -3,6 +3,7 @@ package com.ngsoft.backend.kaltlane.users.controllers;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ngsoft.backend.kaltlane.users.entites.User;
+import com.ngsoft.backend.kaltlane.users.models.UserModel;
 import com.ngsoft.backend.kaltlane.users.services.IUserService;
 
 import jakarta.validation.Valid;
@@ -29,13 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
-
-
-
-
-
-@CrossOrigin(origins = {"http://localhost:4200"})
+@CrossOrigin(origins = { "http://localhost:4200" })
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -52,7 +47,6 @@ public class UserController {
         Pageable pageable = PageRequest.of(page, 4);
         return userService.findAll(pageable);
     }
-    
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
@@ -60,7 +54,8 @@ public class UserController {
         if (user.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(user.orElseThrow());
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "User not found with id: " + id));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("error", "User not found with id: " + id));
         }
     }
 
@@ -73,30 +68,20 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-    
-
-
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@Valid @RequestBody User user, BindingResult result, @PathVariable Long id) {
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UserModel user, BindingResult result, @PathVariable Long id) {
         if (result.hasErrors()) {
             return validation(result);
         }
 
-        Optional<User> existingUser = userService.findById(id);
+        Optional<User> existingUser = userService.update(id, user);
         if (existingUser.isPresent()) {
-            User userToUpdate = existingUser.get();
-            userToUpdate.setEmail(user.getEmail());
-            userToUpdate.setName(user.getName());
-            userToUpdate.setPassword(user.getPassword());
-            userToUpdate.setLastname(user.getLastname());
-            userToUpdate.setSecondlastname(user.getSecondlastname());
-            userToUpdate.setUsername(user.getUsername());
-
-            User updatedUser = userService.save(userToUpdate);
+            User updatedUser = existingUser.get();
             return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "User not found with id: " + id));
         }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap("error", "User not found with"));
+
     }
 
     @DeleteMapping("/{id}")
@@ -113,7 +98,8 @@ public class UserController {
     private ResponseEntity<?> validation(BindingResult result) {
         Map<String, String> errors = new HashMap<>();
         result.getFieldErrors().forEach(
-            error -> errors.put(error.getField(), "El campo " + error.getField() + " " + error.getDefaultMessage()));
+                error -> errors.put(error.getField(),
+                        "El campo " + error.getField() + " " + error.getDefaultMessage()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 

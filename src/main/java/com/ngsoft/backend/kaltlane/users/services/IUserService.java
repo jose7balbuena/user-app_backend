@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 
 import com.ngsoft.backend.kaltlane.users.entites.User;
+import com.ngsoft.backend.kaltlane.users.models.UserModel;
 
 /**
  * User service interface.
@@ -36,6 +37,13 @@ public interface IUserService {
      * @return the saved user
      */
     User save(User user);
+    /**
+     * Updates a user by their ID.
+     * @param id the ID of the user to update
+     * @param user the user data to update
+     * @return an Optional containing the updated user if found, or empty if not found
+     */
+    Optional<User> update(Long id, UserModel user);
     /**
      * Deletes a user by their ID.
      * @param id the ID of the user to delete
