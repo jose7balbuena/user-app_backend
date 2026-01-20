@@ -89,10 +89,10 @@ public class UserController {
         Optional<User> user = userService.findById(id);
         if (user.isPresent()) {
             userService.deleteById(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } else {
+            return ResponseEntity.noContent().build();
+        } 
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+       
     }
 
     private ResponseEntity<?> validation(BindingResult result) {
